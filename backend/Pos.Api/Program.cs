@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Pos.Api.Configuration;
+using Pos.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.AddScoped(sp =>
     var client = sp.GetRequiredService<IMongoClient>();
     return client.GetDatabase(settings.DatabaseName);
 });
+
+builder.Services.AddScoped<ProductService>();
 
 var app = builder.Build();
 

@@ -34,3 +34,9 @@ D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\
 D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
 D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\DnsClient.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\MongoDB.Bson.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\MongoDB.Driver.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\SharpCompress.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\Snappier.dll
+D:\A SLIIT\Intern Gamage Recruiters\Projects_new\supermarket-pos-system\backend\Pos.Api\bin\Debug\net9.0\ZstdSharp.dll

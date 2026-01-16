@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { api } from "../services/api";
 
 export default function PosPage() {
   const [barcode, setBarcode] = useState("");
@@ -7,6 +8,10 @@ export default function PosPage() {
   const [taxRate, setTaxRate] = useState(0.05);
   const [paymentMethod, setPaymentMethod] = useState("CASH");
   const [cashierName, setCashierName] = useState("Cashier");
+  const [isAdding, setIsAdding] = useState(false);
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [error, setError] = useState("");
+  const [lastReceipt, setLastReceipt] = useState(null);
 
   const subTotal = useMemo(
     () => cart.reduce((sum, i) => sum + i.unitPrice * i.qty, 0),
@@ -36,6 +41,74 @@ export default function PosPage() {
     setCart((prev) => prev.filter((i) => i.id !== id));
   }
 
+  async function handleAddByBarcode() {
+    const code = barcode.trim();
+    if (!code) return;
+
+    setError("");
+    setLastReceipt(null);
+    setIsAdding(true);
+
+    try {
+      const product = await api.getProductByBarcode(code);
+
+      setCart((prev) => {
+        const existing = prev.find((x) => x.barcode === product.barcode);
+        if (existing) {
+          return prev.map((x) =>
+            x.barcode === product.barcode ? { ...x, qty: x.qty + 1 } : x
+          );
+        }
+        return [
+          ...prev,
+          {
+            id: product.id || product._id || product.barcode,
+            productId: product.id || product._id || "",
+            barcode: product.barcode,
+            name: product.name,
+            unitPrice: product.price,
+            qty: 1,
+          },
+        ];
+      });
+
+      setBarcode("");
+    } catch (e) {
+      setError(e.message || "Failed to add item");
+    } finally {
+      setIsAdding(false);
+    }
+  }
+
+  async function handleCheckout() {
+    if (cart.length === 0) return;
+
+    setError("");
+    setIsCheckingOut(true);
+
+    try {
+      const payload = {
+        cashierName: cashierName || "Cashier",
+        paymentMethod,
+        discount: Number(discount) || 0,
+        taxRate: Number(taxRate) || 0,
+        items: cart.map((i) => ({
+          barcode: i.barcode,
+          qty: i.qty,
+        })),
+      };
+
+      const sale = await api.checkoutSale(payload);
+      setLastReceipt(sale);
+      setCart([]);
+      setDiscount(0);
+    } catch (e) {
+      setError(e.message || "Checkout failed");
+    } finally {
+      setIsCheckingOut(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -63,6 +136,20 @@ export default function PosPage() {
         </div>
       </div>
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl">
+          {error}
+        </div>
+      )}
+
+      {lastReceipt && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl">
+          <div className="font-semibold">Sale Completed ✅</div>
+          <div className="text-sm">Receipt: {lastReceipt.receiptNo}</div>
+          <div className="text-sm">Total: {lastReceipt.grandTotal}</div>
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Left: Scan + Cart */}
         <div className="lg:col-span-2 space-y-4">
@@ -75,13 +162,17 @@ export default function PosPage() {
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
                 placeholder="Scan or type barcode..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleAddByBarcode();
+                }}
               />
               <button
                 className="px-4 py-2 rounded-lg bg-slate-900 text-white"
                 type="button"
-                onClick={() => alert("Next commit: connect barcode lookup API")}
+                onClick={handleAddByBarcode}
+                disabled={isAdding}
               >
-                Add
+                {isAdding ? "Adding..." : "Add"}
               </button>
             </div>
             <p className="text-xs text-slate-500 mt-2">
@@ -218,10 +309,10 @@ export default function PosPage() {
             <button
               className="mt-4 w-full px-4 py-3 rounded-xl bg-emerald-600 text-white font-semibold disabled:opacity-50"
               type="button"
-              disabled={cart.length === 0}
-              onClick={() => alert("Next commit: connect checkout API")}
+              disabled={cart.length === 0 || isCheckingOut}
+              onClick={handleCheckout}
             >
-              Checkout
+              {isCheckingOut ? "Processing..." : "Checkout"}
             </button>
 
             <p className="text-xs text-slate-500 mt-2">

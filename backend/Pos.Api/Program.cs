@@ -29,6 +29,17 @@ builder.Services.AddScoped(sp =>
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<SaleService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendCors", policy =>
+    {
+        policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins("http://localhost:5173", "http://localhost:5174"); // React dev server
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,6 +52,10 @@ if (app.Environment.IsDevelopment())
 app.UseRouting();
 
 app.UseHttpsRedirection();
+
+app.UseCors("FrontendCors");
+
+app.UseAuthorization();
 
 app.MapControllers();
 

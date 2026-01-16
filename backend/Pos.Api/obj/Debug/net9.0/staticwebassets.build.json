@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "NvBNfsB5pyPlJROjif0ON5bPo2C3lLVyU3tB19kSkOE=",
+  "Source": "Pos.Api",
+  "BasePath": "_content/Pos.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

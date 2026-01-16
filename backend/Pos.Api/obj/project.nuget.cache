@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "dgSpecHash": "m+fW/sH2uIg=",
+  "success": true,
+  "projectFilePath": "D:\\A SLIIT\\Intern Gamage Recruiters\\Projects_new\\supermarket-pos-system\\backend\\Pos.Api\\Pos.Api.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "C:\\Users\\ASUS\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.5.0\\swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1603",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Pos.Api depends on Swashbuckle.AspNetCore (>= 6.4.6) but Swashbuckle.AspNetCore 6.4.6 was not found. Swashbuckle.AspNetCore 6.5.0 was resolved instead.",
+      "libraryId": "Swashbuckle.AspNetCore",
+      "targetGraphs": [
+        "net9.0"
+      ]
+    }
+  ]
+}

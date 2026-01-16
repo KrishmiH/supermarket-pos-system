@@ -35,4 +35,28 @@ export const api = {
       body: JSON.stringify(payload),
     });
   },
+
+  getProducts() {
+    return request("/api/products");
+  },
+
+  createProduct(payload) {
+    return request("/api/products", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  updateProduct(id, payload) {
+    return request(`/api/products/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(payload),
+    });
+  },
+
+  deleteProduct(id) {
+    return request(`/api/products/${id}`, {
+      method: "DELETE",
+    });
+  },
 };

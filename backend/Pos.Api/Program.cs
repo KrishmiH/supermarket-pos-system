@@ -27,6 +27,7 @@ builder.Services.AddScoped(sp =>
 });
 
 builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<SaleService>();
 
 var app = builder.Build();
 

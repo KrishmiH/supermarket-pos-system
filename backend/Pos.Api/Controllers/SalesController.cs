@@ -46,5 +46,23 @@ namespace Pos.Api.Controllers
             var revenue = await _service.GetTodayRevenueAsync();
             return Ok(new { todayRevenue = revenue });
         }
+
+        // GET: api/sales/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Sale>> GetById(string id)
+        {
+            var sale = await _service.GetByIdAsync(id);
+            if (sale == null) return NotFound();
+            return Ok(sale);
+        }
+
+        // GET: api/sales/receipt/{receiptNo}
+        [HttpGet("receipt/{receiptNo}")]
+        public async Task<ActionResult<Sale>> GetByReceipt(string receiptNo)
+        {
+            var sale = await _service.GetByReceiptNoAsync(receiptNo);
+            if (sale == null) return NotFound();
+            return Ok(sale);
+        }
     }
 }

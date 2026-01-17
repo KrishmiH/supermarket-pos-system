@@ -1,9 +1,14 @@
+import { getAuth } from "./auth";
+
 const API_BASE_URL = "http://localhost:5105";
 
 async function request(path, options = {}) {
+  const auth = getAuth();
+
   const res = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
       "Content-Type": "application/json",
+      ...(auth?.token ? { Authorization: `Bearer ${auth.token}` } : {}),
       ...(options.headers || {}),
     },
     ...options,
@@ -70,5 +75,12 @@ export const api = {
 
   getSaleByReceipt(receiptNo) {
   return request(`/api/sales/receipt/${encodeURIComponent(receiptNo)}`);
+  },
+
+  login(payload) {
+    return request("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   },
 };

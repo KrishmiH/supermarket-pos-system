@@ -123,5 +123,15 @@ namespace Pos.Api.Services
             var sales = await _sales.Find(filter).ToListAsync();
             return sales.Sum(s => s.GrandTotal);
         }
+
+        public async Task<Sale?> GetByIdAsync(string id)
+        {
+            return await _sales.Find(s => s.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Sale?> GetByReceiptNoAsync(string receiptNo)
+        {
+            return await _sales.Find(s => s.ReceiptNo == receiptNo).FirstOrDefaultAsync();
+        }
     }
 }

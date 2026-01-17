@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useParams, Link } from "react-router-dom";
-
-function money(v) {
-  return Number(v).toFixed(2);
-}
+import { money } from "../utils/money";
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import Badge from "../ui/Badge";
+import { ArrowLeft } from "lucide-react";
 
 export default function ReceiptDetailsPage() {
   const { receiptNo } = useParams();
@@ -35,12 +36,13 @@ export default function ReceiptDetailsPage() {
         <div>
           <h1 className="text-2xl font-bold">Receipt Details</h1>
           <p className="text-slate-600 font-mono">{receiptNo}</p>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
-            ✓ Completed
-          </div>
+          <Badge tone="emerald">✓ Completed</Badge>
         </div>
-        <Link className="px-4 py-2 rounded-lg border" to="/receipts">
-          Back
+        <Link to="/receipts">
+          <Button variant="secondary" size="sm">
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
         </Link>
       </div>
 
@@ -51,16 +53,16 @@ export default function ReceiptDetailsPage() {
       )}
 
       {loading ? (
-        <div className="p-6 text-slate-500 bg-white border rounded-2xl">
-          Loading…
-        </div>
+        <Card>
+          <div className="p-6 text-slate-500">Loading…</div>
+        </Card>
       ) : !sale ? (
-        <div className="p-6 text-slate-500 bg-white border rounded-2xl">
-          Not found.
-        </div>
+        <Card>
+          <div className="p-6 text-slate-500">Not found.</div>
+        </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 bg-white border rounded-2xl overflow-hidden">
+          <Card className="lg:col-span-2 overflow-hidden">
             <div className="px-4 py-3 border-b font-semibold">Items</div>
             <table className="w-full text-sm">
               <thead className="bg-slate-100 text-slate-600">
@@ -80,18 +82,18 @@ export default function ReceiptDetailsPage() {
                         {i.barcode}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">{money(i.unitPrice)}</td>
+                    <td className="px-4 py-3 text-right">LKR {money(i.unitPrice)}</td>
                     <td className="px-4 py-3 text-center">{i.qty}</td>
                     <td className="px-4 py-3 text-right font-medium">
-                      {money(i.lineTotal)}
+                      LKR {money(i.lineTotal)}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          </Card>
 
-          <div className="bg-white border rounded-2xl p-4">
+          <Card className="p-4">
             <div className="font-semibold">Summary</div>
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex justify-between">
@@ -104,25 +106,25 @@ export default function ReceiptDetailsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Sub total</span>
-                <span>{money(sale.subTotal)}</span>
+                <span>LKR {money(sale.subTotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Discount</span>
-                <span>{money(sale.discount)}</span>
+                <span>LKR {money(sale.discount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Tax</span>
-                <span>{money(sale.taxAmount)}</span>
+                <span>LKR {money(sale.taxAmount)}</span>
               </div>
-              <div className="border-t pt-3 mt-2 flex justify-between text-lg font-bold">
+              <div className="border-t pt-3 mt-2 flex justify-between text-lg font-bold text-emerald-600">
                 <span>Total</span>
-                <span>{money(sale.grandTotal)}</span>
+                <span>LKR {money(sale.grandTotal)}</span>
               </div>
               <div className="text-xs text-slate-500 pt-2">
                 {new Date(sale.createdAt).toLocaleString()}
               </div>
             </div>
-          </div>
+          </Card>
         </div>
       )}
     </div>

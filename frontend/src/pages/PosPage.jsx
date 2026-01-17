@@ -1,7 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { api } from "../services/api";
+import { useToast } from "../components/ToastProvider";
+import { money } from "../utils/money";
 
 export default function PosPage() {
+  const barcodeRef = useRef(null);
+  const toast = useToast();
+
   const [barcode, setBarcode] = useState("");
   const [cart, setCart] = useState([]);
   const [discount, setDiscount] = useState(0);
@@ -12,6 +17,28 @@ export default function PosPage() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [error, setError] = useState("");
   const [lastReceipt, setLastReceipt] = useState(null);
+
+  // Auto-focus barcode input on load
+  useEffect(() => {
+    barcodeRef.current?.focus();
+  }, []);
+
+  // Keyboard shortcuts: ESC to clear, Ctrl+L to focus
+  useEffect(() => {
+    function onKeyDown(e) {
+      if (e.key === "Escape") {
+        setBarcode("");
+      }
+
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "l") {
+        e.preventDefault();
+        barcodeRef.current?.focus();
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const subTotal = useMemo(
     () => cart.reduce((sum, i) => sum + i.unitPrice * i.qty, 0),
@@ -75,6 +102,7 @@ export default function PosPage() {
       setBarcode("");
     } catch (e) {
       setError(e.message || "Failed to add item");
+      toast.error(e.message || "Failed to add item");
     } finally {
       setIsAdding(false);
     }
@@ -102,8 +130,10 @@ export default function PosPage() {
       setLastReceipt(sale);
       setCart([]);
       setDiscount(0);
+      toast.success(`Sale completed. Receipt: ${sale.receiptNo}`);
     } catch (e) {
       setError(e.message || "Checkout failed");
+      toast.error(e.message || "Checkout failed");
     } finally {
       setIsCheckingOut(false);
     }
@@ -158,6 +188,7 @@ export default function PosPage() {
             <label className="text-sm font-medium">Barcode</label>
             <div className="flex gap-2 mt-2">
               <input
+                ref={barcodeRef}
                 className="flex-1 border rounded-lg px-3 py-2"
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
@@ -269,7 +300,7 @@ export default function PosPage() {
             <div className="mt-3 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600">Sub total</span>
-                <span>{Math.round(subTotal * 100) / 100}</span>
+                <span>{money(subTotal)}</span>
               </div>
 
               <div className="flex items-center justify-between gap-2">
@@ -297,12 +328,12 @@ export default function PosPage() {
 
               <div className="flex justify-between">
                 <span className="text-slate-600">Tax</span>
-                <span>{taxAmount}</span>
+                <span>{money(taxAmount)}</span>
               </div>
 
               <div className="border-t pt-2 flex justify-between font-semibold">
                 <span>Grand total</span>
-                <span>{Math.round(grandTotal * 100) / 100}</span>
+                <span>{money(grandTotal)}</span>
               </div>
             </div>
 

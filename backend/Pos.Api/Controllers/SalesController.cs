@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Api.Dtos;
 using Pos.Api.Models;
@@ -7,6 +8,7 @@ namespace Pos.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class SalesController : ControllerBase
     {
         private readonly SaleService _service;
@@ -17,6 +19,7 @@ namespace Pos.Api.Controllers
         }
 
         // POST: api/sales/checkout
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         [HttpPost("checkout")]
         public async Task<ActionResult<Sale>> Checkout(SaleCreateDto dto)
         {
@@ -32,6 +35,7 @@ namespace Pos.Api.Controllers
         }
 
         // GET: api/sales/recent?limit=20
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet("recent")]
         public async Task<ActionResult<List<Sale>>> Recent([FromQuery] int limit = 20)
         {
@@ -40,6 +44,7 @@ namespace Pos.Api.Controllers
         }
 
         // GET: api/sales/today-revenue
+        [Authorize(Roles = "Admin,Manager")]
         [HttpGet("today-revenue")]
         public async Task<ActionResult<object>> TodayRevenue()
         {
@@ -57,6 +62,7 @@ namespace Pos.Api.Controllers
         }
 
         // GET: api/sales/receipt/{receiptNo}
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         [HttpGet("receipt/{receiptNo}")]
         public async Task<ActionResult<Sale>> GetByReceipt(string receiptNo)
         {

@@ -59,4 +59,12 @@ export const api = {
       method: "DELETE",
     });
   },
+
+  getTodayRevenue() {
+    return request("/api/sales/today-revenue");
+  },
+
+  getRecentSales(limit = 10) {
+    return request(`/api/sales/recent?limit=${limit}`);
+  },
 };

@@ -67,4 +67,8 @@ export const api = {
   getRecentSales(limit = 10) {
     return request(`/api/sales/recent?limit=${limit}`);
   },
+
+  getSaleByReceipt(receiptNo) {
+  return request(`/api/sales/receipt/${encodeURIComponent(receiptNo)}`);
+  },
 };

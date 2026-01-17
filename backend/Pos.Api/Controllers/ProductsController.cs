@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Pos.Api.Dtos;
 using Pos.Api.Models;
@@ -7,6 +8,7 @@ namespace Pos.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin,Manager")]
     public class ProductsController : ControllerBase
     {
         private readonly ProductService _service;

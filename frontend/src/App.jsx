@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -26,14 +25,14 @@ function LayoutWithSidebar() {
   );
 }
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes - No Layout */}
+        {/* Public route (no layout) */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected Routes - With Layout */}
+        {/* Protected routes (with layout) */}
         <Route element={<LayoutWithSidebar />}>
           <Route
             path="/"
@@ -43,6 +42,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/pos"
             element={
@@ -51,6 +51,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/products"
             element={
@@ -59,6 +60,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/receipts"
             element={
@@ -67,6 +69,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/receipts/:receiptNo"
             element={
@@ -76,9 +79,10 @@ function App() {
             }
           />
         </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
 }
-
-export default App;

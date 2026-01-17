@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
 
+function money(v) {
+  return Number(v).toFixed(2);
+}
+
 export default function ReceiptsPage() {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,14 +69,26 @@ export default function ReceiptsPage() {
                 <tr key={s.id} className="border-t hover:bg-slate-50">
                   <td className="px-4 py-3 font-mono">{s.receiptNo}</td>
                   <td className="px-4 py-3">{s.cashierName}</td>
-                  <td className="px-4 py-3">{s.paymentMethod}</td>
-                  <td className="px-4 py-3 text-right">{s.grandTotal}</td>
+                  <td className="px-4 py-3">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        s.paymentMethod === "CASH"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-purple-100 text-purple-700"
+                      }`}
+                    >
+                      {s.paymentMethod}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right font-medium">
+                    {money(s.grandTotal)}
+                  </td>
                   <td className="px-4 py-3 text-right">
                     {new Date(s.createdAt).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
-                      className="text-xs text-blue-600"
+                      className="text-xs px-3 py-1 rounded-full border hover:bg-slate-100"
                       onClick={() => navigate(`/receipts/${s.receiptNo}`)}
                     >
                       View

@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useParams, Link } from "react-router-dom";
 
+function money(v) {
+  return Number(v).toFixed(2);
+}
+
 export default function ReceiptDetailsPage() {
   const { receiptNo } = useParams();
   const [sale, setSale] = useState(null);
@@ -31,6 +35,9 @@ export default function ReceiptDetailsPage() {
         <div>
           <h1 className="text-2xl font-bold">Receipt Details</h1>
           <p className="text-slate-600 font-mono">{receiptNo}</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">
+            ✓ Completed
+          </div>
         </div>
         <Link className="px-4 py-2 rounded-lg border" to="/receipts">
           Back
@@ -73,9 +80,11 @@ export default function ReceiptDetailsPage() {
                         {i.barcode}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">{i.unitPrice}</td>
+                    <td className="px-4 py-3 text-right">{money(i.unitPrice)}</td>
                     <td className="px-4 py-3 text-center">{i.qty}</td>
-                    <td className="px-4 py-3 text-right">{i.lineTotal}</td>
+                    <td className="px-4 py-3 text-right font-medium">
+                      {money(i.lineTotal)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -95,19 +104,19 @@ export default function ReceiptDetailsPage() {
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Sub total</span>
-                <span>{sale.subTotal}</span>
+                <span>{money(sale.subTotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Discount</span>
-                <span>{sale.discount}</span>
+                <span>{money(sale.discount)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Tax</span>
-                <span>{sale.taxAmount}</span>
+                <span>{money(sale.taxAmount)}</span>
               </div>
-              <div className="border-t pt-2 flex justify-between font-semibold">
+              <div className="border-t pt-3 mt-2 flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span>{sale.grandTotal}</span>
+                <span>{money(sale.grandTotal)}</span>
               </div>
               <div className="text-xs text-slate-500 pt-2">
                 {new Date(sale.createdAt).toLocaleString()}

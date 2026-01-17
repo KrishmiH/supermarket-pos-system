@@ -1,5 +1,7 @@
 import { clearAuth, getAuth } from "../services/auth";
 import { useNavigate } from "react-router-dom";
+import Button from "../ui/Button";
+import { LogOut } from "lucide-react";
 
 export default function Topbar() {
   const auth = getAuth();
@@ -11,26 +13,23 @@ export default function Topbar() {
   }
 
   return (
-    <div className="h-14 bg-white border-b flex items-center justify-end px-4 gap-3">
-      <div className="text-sm text-slate-700">
+    <div className="h-14 bg-white border-b flex items-center justify-between px-4">
+      <div className="text-sm text-slate-600">
         {auth ? (
           <>
-            <span className="font-medium">{auth.username}</span>
+            <span className="font-semibold text-slate-800">{auth.username}</span>
             <span className="text-slate-400"> · </span>
-            <span className="text-slate-600">{auth.role}</span>
+            <span>{auth.role}</span>
           </>
         ) : (
-          <span className="text-slate-500">Not signed in</span>
+          "Not signed in"
         )}
       </div>
 
-      <button
-        className="px-3 py-1.5 rounded-lg border text-sm hover:bg-slate-50"
-        onClick={logout}
-        type="button"
-      >
+      <Button variant="secondary" onClick={logout} type="button">
+        <LogOut size={16} />
         Logout
-      </button>
+      </Button>
     </div>
   );
 }

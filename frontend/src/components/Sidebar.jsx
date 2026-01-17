@@ -1,56 +1,74 @@
 import { NavLink } from "react-router-dom";
 import { getAuth } from "../services/auth";
+import { LayoutDashboard, ShoppingCart, Package, Receipt } from "lucide-react";
 
-const linkClass = "block px-3 py-2 rounded hover:bg-slate-800 transition";
-const activeClass = "bg-slate-800";
+const linkBase =
+  "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-slate-800";
+const active = "bg-slate-800";
 
 export default function Sidebar() {
   const auth = getAuth();
   const role = auth?.role;
+
   const isAdminOrManager = role === "Admin" || role === "Manager";
 
   return (
     <div className="w-64 bg-slate-900 text-white min-h-screen p-4">
-      <h2 className="text-xl font-bold mb-6">POS System</h2>
-      <ul className="space-y-3">
+      <div className="flex items-center gap-2 mb-6">
+        <div className="h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center font-bold">
+          POS
+        </div>
+        <div>
+          <div className="font-bold leading-tight">Supermarket POS</div>
+          <div className="text-xs text-white/60">Inventory & Billing</div>
+        </div>
+      </div>
+
+      <nav className="space-y-2">
         {isAdminOrManager && (
-          <li>
-            <NavLink
-              to="/"
-              end
-              className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}
-            >
-              Dashboard
-            </NavLink>
-          </li>
-        )}
-        <li>
           <NavLink
-            to="/pos"
-            className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}
+            to="/"
+            end
+            className={({ isActive }) => `${linkBase} ${isActive ? active : ""}`}
           >
-            POS Billing
+            <LayoutDashboard size={18} />
+            Dashboard
           </NavLink>
-        </li>
+        )}
+
+        <NavLink
+          to="/pos"
+          className={({ isActive }) => `${linkBase} ${isActive ? active : ""}`}
+        >
+          <ShoppingCart size={18} />
+          POS Billing
+        </NavLink>
+
         {isAdminOrManager && (
-          <li>
-            <NavLink
-              to="/products"
-              className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}
-            >
-              Products
-            </NavLink>
-          </li>
-        )}
-        <li>
           <NavLink
-            to="/receipts"
-            className={({ isActive }) => `${linkClass} ${isActive ? activeClass : ""}`}
+            to="/products"
+            className={({ isActive }) => `${linkBase} ${isActive ? active : ""}`}
           >
-            Receipts
+            <Package size={18} />
+            Products
           </NavLink>
-        </li>
-      </ul>
+        )}
+
+        <NavLink
+          to="/receipts"
+          className={({ isActive }) => `${linkBase} ${isActive ? active : ""}`}
+        >
+          <Receipt size={18} />
+          Receipts
+        </NavLink>
+      </nav>
+
+      <div className="mt-6 pt-4 border-t border-white/10 text-xs text-white/60">
+        Logged in as{" "}
+        <span className="text-white/90 font-semibold">{auth?.username}</span>
+        <span className="text-white/50"> · </span>
+        <span className="text-white/80">{auth?.role}</span>
+      </div>
     </div>
   );
 }

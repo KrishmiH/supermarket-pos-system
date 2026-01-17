@@ -35,7 +35,7 @@ namespace Pos.Api.Controllers
         }
 
         // GET: api/sales/recent?limit=20
-        [Authorize(Roles = "Admin,Manager")]
+        [Authorize(Roles = "Admin,Manager,Cashier")]
         [HttpGet("recent")]
         public async Task<ActionResult<List<Sale>>> Recent([FromQuery] int limit = 20)
         {

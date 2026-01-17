@@ -4,6 +4,7 @@ import { money } from "../utils/money";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
+import Table from "../ui/Table";
 import { RefreshCcw, TrendingUp, Receipt, ShieldCheck } from "lucide-react";
 
 function Stat({ icon, label, value, sub, tone = "gray" }) {
@@ -110,38 +111,35 @@ export default function DashboardPage() {
         ) : recentSales.length === 0 ? (
           <div className="p-6 text-slate-500">No sales found.</div>
         ) : (
-          <div className="overflow-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-slate-50 text-slate-600">
-                <tr>
-                  <th className="px-4 py-3 text-left">Receipt</th>
-                  <th className="px-4 py-3 text-left">Cashier</th>
-                  <th className="px-4 py-3 text-left">Payment</th>
-                  <th className="px-4 py-3 text-right">Total</th>
-                  <th className="px-4 py-3 text-right">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recentSales.map((s) => (
-                  <tr key={s.id} className="border-t hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono">{s.receiptNo}</td>
-                    <td className="px-4 py-3">{s.cashierName}</td>
-                    <td className="px-4 py-3">
-                      <Badge tone={s.paymentMethod === "CASH" ? "blue" : "purple"}>
-                        {s.paymentMethod}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3 text-right font-semibold">
-                      LKR {money(s.grandTotal)}
-                    </td>
-                    <td className="px-4 py-3 text-right text-slate-600">
-                      {new Date(s.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table
+            columns={[
+              { key: "receiptNo", title: "Receipt" },
+              { key: "cashierName", title: "Cashier" },
+              {
+                key: "paymentMethod",
+                title: "Payment",
+                render: (r) => (
+                  <Badge tone={r.paymentMethod === "CASH" ? "blue" : "purple"}>
+                    {r.paymentMethod}
+                  </Badge>
+                ),
+              },
+              {
+                key: "grandTotal",
+                title: "Total",
+                align: "right",
+                render: (r) => <span className="font-semibold">LKR {money(r.grandTotal)}</span>,
+              },
+              {
+                key: "createdAt",
+                title: "Date",
+                align: "right",
+                render: (r) => new Date(r.createdAt).toLocaleString(),
+              },
+            ]}
+            rows={recentSales}
+            rowKey={(r) => r.id}
+          />
         )}
       </Card>
     </div>

@@ -2,6 +2,10 @@ import { useState } from "react";
 import { api } from "../services/api";
 import { saveAuth } from "../services/auth";
 import { useNavigate } from "react-router-dom";
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
+import { LogIn } from "lucide-react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("admin");
@@ -29,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white border rounded-2xl shadow-sm p-6">
+      <Card className="w-full max-w-md">
         <h1 className="text-2xl font-bold">POS Login</h1>
         <p className="text-slate-600 mt-1">Sign in to continue</p>
 
@@ -41,32 +45,33 @@ export default function LoginPage() {
 
         <form className="mt-5 space-y-3" onSubmit={handleLogin}>
           <div>
-            <label className="text-xs text-slate-600">Username</label>
-            <input
-              className="w-full border rounded-lg px-3 py-2 mt-1"
+            <label className="text-xs text-slate-600 font-medium">Username</label>
+            <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoFocus
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="text-xs text-slate-600">Password</label>
-            <input
-              className="w-full border rounded-lg px-3 py-2 mt-1"
+            <label className="text-xs text-slate-600 font-medium">Password</label>
+            <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               type="password"
+              className="mt-1"
             />
           </div>
 
-          <button
-            className="w-full px-4 py-3 rounded-xl bg-slate-900 text-white font-semibold disabled:opacity-50"
+          <Button
+            className="w-full"
             disabled={loading}
             type="submit"
           >
+            <LogIn className="w-4 h-4" />
             {loading ? "Signing in..." : "Login"}
-          </button>
+          </Button>
 
           <div className="text-xs text-slate-500">
             Demo accounts:
@@ -77,7 +82,7 @@ export default function LoginPage() {
             </div>
           </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

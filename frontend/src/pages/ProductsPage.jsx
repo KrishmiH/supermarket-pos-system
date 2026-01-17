@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { api } from "../services/api";
+import { money } from "../utils/money";
 import Modal from "../components/Modal";
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Badge from "../ui/Badge";
+import { RefreshCcw, Plus, Pencil, Trash2 } from "lucide-react";
 
 const emptyForm = {
   barcode: "",
@@ -149,20 +155,14 @@ export default function ProductsPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
-            className="px-4 py-2 rounded-lg border"
-            onClick={loadProducts}
-            type="button"
-          >
+          <Button variant="secondary" size="sm" onClick={loadProducts} type="button">
+            <RefreshCcw className="w-4 h-4" />
             Refresh
-          </button>
-          <button
-            className="px-4 py-2 rounded-lg bg-slate-900 text-white"
-            onClick={openAdd}
-            type="button"
-          >
-            + Add Product
-          </button>
+          </Button>
+          <Button onClick={openAdd} type="button">
+            <Plus className="w-4 h-4" />
+            Add Product
+          </Button>
         </div>
       </div>
 
@@ -174,7 +174,7 @@ export default function ProductsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white border rounded-2xl overflow-hidden">
+      <Card className="overflow-hidden">
         {loading ? (
           <div className="p-6 text-slate-500">Loading products…</div>
         ) : products.length === 0 ? (
@@ -202,47 +202,37 @@ export default function ProductsPage() {
                     <td className="px-4 py-3 font-mono">{p.barcode}</td>
                     <td className="px-4 py-3 font-medium">{p.name}</td>
                     <td className="px-4 py-3">{p.category}</td>
-                    <td className="px-4 py-3 text-right">{p.price}</td>
+                    <td className="px-4 py-3 text-right">LKR {money(p.price)}</td>
 
                     <td className="px-4 py-3 text-center">
-                      <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          lowStock
-                            ? "bg-red-100 text-red-700"
-                            : "bg-emerald-100 text-emerald-700"
-                        }`}
-                      >
+                      <Badge tone={lowStock ? "red" : "emerald"}>
                         {p.stock}
-                      </span>
+                      </Badge>
                       <div className="text-[11px] text-slate-500 mt-1">
                         Reorder ≤ {p.reorderLevel}
                       </div>
                     </td>
 
                     <td className="px-4 py-3 text-center">
-                      {p.isActive ? (
-                        <span className="text-emerald-600 text-xs font-semibold">
-                          Active
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 text-xs">Inactive</span>
-                      )}
+                      <Badge tone={p.isActive ? "emerald" : "slate"}>
+                        {p.isActive ? "Active" : "Inactive"}
+                      </Badge>
                     </td>
 
                     <td className="px-4 py-3 text-right space-x-2">
                       <button
-                        className="text-xs text-blue-600"
+                        className="text-xs text-blue-600 hover:text-blue-700"
                         onClick={() => openEdit(p)}
                         type="button"
                       >
-                        Edit
+                        <Pencil className="w-4 h-4 inline" />
                       </button>
                       <button
-                        className="text-xs text-red-600"
+                        className="text-xs text-red-600 hover:text-red-700"
                         onClick={() => handleDelete(p)}
                         type="button"
                       >
-                        Delete
+                        <Trash2 className="w-4 h-4 inline" />
                       </button>
                     </td>
                   </tr>
@@ -251,73 +241,73 @@ export default function ProductsPage() {
             </tbody>
           </table>
         )}
-      </div>
+      </Card>
 
       {/* Modal */}
       <Modal title={modalTitle} open={modalOpen} onClose={closeModal}>
         <div className="space-y-3">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-slate-600">Barcode *</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2"
+              <label className="text-xs text-slate-600 font-medium">Barcode *</label>
+              <Input
                 value={form.barcode}
                 onChange={(e) => setField("barcode", e.target.value)}
                 placeholder="e.g., 123456"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-600">Category</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2"
+              <label className="text-xs text-slate-600 font-medium">Category</label>
+              <Input
                 value={form.category}
                 onChange={(e) => setField("category", e.target.value)}
                 placeholder="e.g., Beverages"
+                className="mt-1"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="text-xs text-slate-600">Name *</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2"
+              <label className="text-xs text-slate-600 font-medium">Name *</label>
+              <Input
                 value={form.name}
                 onChange={(e) => setField("name", e.target.value)}
                 placeholder="e.g., Apple Juice"
+                className="mt-1"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-600">Price</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2 text-right"
+              <label className="text-xs text-slate-600 font-medium">Price</label>
+              <Input
                 value={form.price}
                 onChange={(e) => setField("price", e.target.value)}
                 type="number"
                 step="0.01"
                 min="0"
+                className="mt-1 text-right"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-600">Stock</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2 text-right"
+              <label className="text-xs text-slate-600 font-medium">Stock</label>
+              <Input
                 value={form.stock}
                 onChange={(e) => setField("stock", e.target.value)}
                 type="number"
                 min="0"
+                className="mt-1 text-right"
               />
             </div>
 
             <div>
-              <label className="text-xs text-slate-600">Reorder level</label>
-              <input
-                className="w-full border rounded-lg px-3 py-2 text-right"
+              <label className="text-xs text-slate-600 font-medium">Reorder level</label>
+              <Input
                 value={form.reorderLevel}
                 onChange={(e) => setField("reorderLevel", e.target.value)}
                 type="number"
                 min="0"
+                className="mt-1 text-right"
               />
             </div>
 
@@ -335,23 +325,22 @@ export default function ProductsPage() {
           </div>
 
           <div className="pt-3 border-t flex justify-end gap-2">
-            <button
-              className="px-4 py-2 rounded-lg border"
+            <Button
+              variant="secondary"
               onClick={closeModal}
               disabled={saving}
               type="button"
             >
               Cancel
-            </button>
+            </Button>
 
-            <button
-              className="px-4 py-2 rounded-lg bg-slate-900 text-white disabled:opacity-50"
+            <Button
               onClick={handleSave}
               disabled={saving}
               type="button"
             >
               {saving ? "Saving..." : "Save"}
-            </button>
+            </Button>
           </div>
         </div>
       </Modal>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useNavigate } from "react-router-dom";
-
-function money(v) {
-  return Number(v).toFixed(2);
-}
+import { money } from "../utils/money";
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import Badge from "../ui/Badge";
+import { RefreshCcw } from "lucide-react";
 
 export default function ReceiptsPage() {
   const [sales, setSales] = useState([]);
@@ -36,9 +37,10 @@ export default function ReceiptsPage() {
           <h1 className="text-2xl font-bold">Receipts</h1>
           <p className="text-slate-600">View recent sales receipts</p>
         </div>
-        <button className="px-4 py-2 rounded-lg border" onClick={load}>
+        <Button onClick={load} variant="secondary" size="sm">
+          <RefreshCcw className="w-4 h-4" />
           Refresh
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -47,7 +49,7 @@ export default function ReceiptsPage() {
         </div>
       )}
 
-      <div className="bg-white border rounded-2xl overflow-hidden">
+      <Card>
         {loading ? (
           <div className="p-6 text-slate-500">Loading receipts…</div>
         ) : sales.length === 0 ? (
@@ -70,36 +72,33 @@ export default function ReceiptsPage() {
                   <td className="px-4 py-3 font-mono">{s.receiptNo}</td>
                   <td className="px-4 py-3">{s.cashierName}</td>
                   <td className="px-4 py-3">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        s.paymentMethod === "CASH"
-                          ? "bg-blue-100 text-blue-700"
-                          : "bg-purple-100 text-purple-700"
-                      }`}
+                    <Badge
+                      tone={s.paymentMethod === "CASH" ? "blue" : "purple"}
                     >
                       {s.paymentMethod}
-                    </span>
+                    </Badge>
                   </td>
                   <td className="px-4 py-3 text-right font-medium">
-                    {money(s.grandTotal)}
+                    LKR {money(s.grandTotal)}
                   </td>
                   <td className="px-4 py-3 text-right">
                     {new Date(s.createdAt).toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <button
-                      className="text-xs px-3 py-1 rounded-full border hover:bg-slate-100"
+                    <Button
+                      size="sm"
+                      variant="secondary"
                       onClick={() => navigate(`/receipts/${s.receiptNo}`)}
                     >
                       View
-                    </button>
+                    </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
-      </div>
+      </Card>
     </div>
   );
 }

@@ -3,6 +3,13 @@ import { api } from "../services/api";
 import { useToast } from "../components/ToastProvider";
 import { money } from "../utils/money";
 
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import Input from "../ui/Input";
+import Badge from "../ui/Badge";
+
+import { Barcode, Plus, Trash2, Minus, CreditCard, Banknote, X } from "lucide-react";
+
 export default function PosPage() {
   const barcodeRef = useRef(null);
   const toast = useToast();
@@ -100,6 +107,7 @@ export default function PosPage() {
       });
 
       setBarcode("");
+      toast.success(`Added: ${product.name}`);
     } catch (e) {
       setError(e.message || "Failed to add item");
       toast.error(e.message || "Failed to add item");
@@ -142,27 +150,42 @@ export default function PosPage() {
   return (
     <div className="space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-bold">POS Billing</h1>
-          <p className="text-slate-600">Scan barcode, add items, checkout.</p>
+          <p className="text-slate-600">
+            Scan barcode, manage cart, and checkout.{" "}
+            <span className="text-slate-500">(Ctrl+L focus, Esc clear)</span>
+          </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <input
-            className="border rounded-lg px-3 py-2 text-sm"
-            value={cashierName}
-            onChange={(e) => setCashierName(e.target.value)}
-            placeholder="Cashier name"
-          />
-          <select
-            className="border rounded-lg px-3 py-2 text-sm"
-            value={paymentMethod}
-            onChange={(e) => setPaymentMethod(e.target.value)}
-          >
-            <option value="CASH">Cash</option>
-            <option value="CARD">Card</option>
-          </select>
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <div className="flex items-center gap-2">
+            <Input
+              value={cashierName}
+              onChange={(e) => setCashierName(e.target.value)}
+              placeholder="Cashier name"
+              className="sm:w-56"
+            />
+            <div className="flex items-center gap-2">
+              <Button
+                variant={paymentMethod === "CASH" ? "primary" : "secondary"}
+                type="button"
+                onClick={() => setPaymentMethod("CASH")}
+              >
+                <Banknote size={16} />
+                Cash
+              </Button>
+              <Button
+                variant={paymentMethod === "CARD" ? "primary" : "secondary"}
+                type="button"
+                onClick={() => setPaymentMethod("CARD")}
+              >
+                <CreditCard size={16} />
+                Card
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -173,115 +196,114 @@ export default function PosPage() {
       )}
 
       {lastReceipt && (
-        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl">
-          <div className="font-semibold">Sale Completed ✅</div>
-          <div className="text-sm">Receipt: {lastReceipt.receiptNo}</div>
-          <div className="text-sm">Total: {lastReceipt.grandTotal}</div>
-        </div>
+        <Card
+          className="p-0 border-emerald-200"
+          title="Sale Completed"
+          right={<Badge tone="green">✓ Completed</Badge>}
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div className="text-sm text-slate-700">
+              Receipt: <span className="font-mono font-semibold">{lastReceipt.receiptNo}</span>
+            </div>
+            <div className="text-sm font-semibold">
+              Total: <span className="text-emerald-700">LKR {money(lastReceipt.grandTotal)}</span>
+            </div>
+          </div>
+        </Card>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Left: Scan + Cart */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Scan bar */}
-          <div className="bg-white border rounded-2xl p-4">
-            <label className="text-sm font-medium">Barcode</label>
-            <div className="flex gap-2 mt-2">
-              <input
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        {/* Left (2 cols): Scan + Cart */}
+        <div className="xl:col-span-2 space-y-4">
+          <Card title="Scan Barcode" right={<Badge tone="blue"><Barcode size={14} className="inline" /> Scanner</Badge>}>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <Input
                 ref={barcodeRef}
-                className="flex-1 border rounded-lg px-3 py-2"
                 value={barcode}
                 onChange={(e) => setBarcode(e.target.value)}
-                placeholder="Scan or type barcode..."
+                placeholder="Scan or type barcode…"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleAddByBarcode();
                 }}
               />
-              <button
-                className="px-4 py-2 rounded-lg bg-slate-900 text-white"
-                type="button"
-                onClick={handleAddByBarcode}
-                disabled={isAdding}
-              >
+              <Button onClick={handleAddByBarcode} disabled={isAdding} type="button">
+                <Plus size={16} />
                 {isAdding ? "Adding..." : "Add"}
-              </button>
+              </Button>
+              <Button
+                variant="secondary"
+                type="button"
+                onClick={() => setBarcode("")}
+              >
+                <X size={16} />
+                Clear
+              </Button>
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <div className="text-xs text-slate-500 mt-2">
               Tip: barcode scanners act like keyboard input.
-            </p>
-          </div>
+            </div>
+          </Card>
 
-          {/* Cart table */}
-          <div className="bg-white border rounded-2xl p-4">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold">Cart</h2>
-              <button
-                className="text-sm text-red-600"
+          <Card
+            title={`Cart (${cart.length})`}
+            right={
+              <Button
+                variant="secondary"
                 type="button"
                 onClick={() => setCart([])}
+                disabled={cart.length === 0}
               >
-                Clear
-              </button>
-            </div>
-
-            <div className="overflow-auto mt-3">
+                <Trash2 size={16} />
+                Clear cart
+              </Button>
+            }
+            className="p-0 overflow-hidden"
+          >
+            <div className="overflow-auto">
               <table className="w-full text-sm">
-                <thead className="text-slate-600">
-                  <tr className="border-b">
-                    <th className="py-2 text-left">Item</th>
-                    <th className="py-2 text-right">Price</th>
-                    <th className="py-2 text-center">Qty</th>
-                    <th className="py-2 text-right">Total</th>
-                    <th className="py-2"></th>
+                <thead className="bg-slate-50 text-slate-600">
+                  <tr>
+                    <th className="px-4 py-3 text-left">Item</th>
+                    <th className="px-4 py-3 text-right">Unit</th>
+                    <th className="px-4 py-3 text-center">Qty</th>
+                    <th className="px-4 py-3 text-right">Line</th>
+                    <th className="px-4 py-3 text-right">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {cart.length === 0 ? (
                     <tr>
-                      <td className="py-6 text-slate-500" colSpan={5}>
-                        Cart is empty.
+                      <td className="px-4 py-10 text-slate-500" colSpan={5}>
+                        Cart is empty. Scan an item to begin.
                       </td>
                     </tr>
                   ) : (
                     cart.map((i) => (
-                      <tr key={i.id} className="border-b">
-                        <td className="py-3">
-                          <div className="font-medium">{i.name}</div>
-                          <div className="text-xs text-slate-500">
-                            {i.barcode}
-                          </div>
+                      <tr key={i.id} className="border-t hover:bg-slate-50">
+                        <td className="px-4 py-3">
+                          <div className="font-semibold">{i.name}</div>
+                          <div className="text-xs text-slate-500 font-mono">{i.barcode}</div>
                         </td>
-                        <td className="py-3 text-right">{i.unitPrice}</td>
-                        <td className="py-3">
+                        <td className="px-4 py-3 text-right">LKR {money(i.unitPrice)}</td>
+                        <td className="px-4 py-3">
                           <div className="flex items-center justify-center gap-2">
-                            <button
-                              className="px-2 py-1 border rounded"
-                              onClick={() => decQty(i.id)}
-                              type="button"
-                            >
-                              -
-                            </button>
-                            <span className="w-6 text-center">{i.qty}</span>
-                            <button
-                              className="px-2 py-1 border rounded"
-                              onClick={() => incQty(i.id)}
-                              type="button"
-                            >
-                              +
-                            </button>
+                            <Button variant="secondary" className="px-2 py-2" onClick={() => decQty(i.id)} type="button">
+                              <Minus size={16} />
+                            </Button>
+                            <div className="w-10 text-center font-semibold">{i.qty}</div>
+                            <Button variant="secondary" className="px-2 py-2" onClick={() => incQty(i.id)} type="button">
+                              <Plus size={16} />
+                            </Button>
                           </div>
                         </td>
-                        <td className="py-3 text-right">
-                          {Math.round(i.unitPrice * i.qty * 100) / 100}
+                        <td className="px-4 py-3 text-right font-semibold">
+                          LKR {money(i.unitPrice * i.qty)}
                         </td>
-                        <td className="py-3 text-right">
-                          <button
-                            className="text-xs text-red-600"
-                            onClick={() => removeItem(i.id)}
-                            type="button"
-                          >
+                        <td className="px-4 py-3 text-right">
+                          <Button variant="secondary" onClick={() => removeItem(i.id)} type="button">
+                            <Trash2 size={16} />
                             Remove
-                          </button>
+                          </Button>
                         </td>
                       </tr>
                     ))
@@ -289,24 +311,22 @@ export default function PosPage() {
                 </tbody>
               </table>
             </div>
-          </div>
+          </Card>
         </div>
 
         {/* Right: Summary */}
         <div className="space-y-4">
-          <div className="bg-white border rounded-2xl p-4">
-            <h2 className="font-semibold">Summary</h2>
-
-            <div className="mt-3 space-y-2 text-sm">
+          <Card title="Payment Summary">
+            <div className="space-y-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600">Sub total</span>
-                <span>{money(subTotal)}</span>
+                <span className="font-semibold">LKR {money(subTotal)}</span>
               </div>
 
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <span className="text-slate-600">Discount</span>
-                <input
-                  className="w-28 border rounded px-2 py-1 text-right"
+                <Input
+                  className="w-32 text-right"
                   value={discount}
                   onChange={(e) => setDiscount(e.target.value)}
                   type="number"
@@ -314,10 +334,10 @@ export default function PosPage() {
                 />
               </div>
 
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <span className="text-slate-600">Tax rate</span>
-                <input
-                  className="w-28 border rounded px-2 py-1 text-right"
+                <Input
+                  className="w-32 text-right"
                   value={taxRate}
                   onChange={(e) => setTaxRate(e.target.value)}
                   type="number"
@@ -328,28 +348,29 @@ export default function PosPage() {
 
               <div className="flex justify-between">
                 <span className="text-slate-600">Tax</span>
-                <span>{money(taxAmount)}</span>
+                <span className="font-semibold">LKR {money(taxAmount)}</span>
               </div>
 
-              <div className="border-t pt-2 flex justify-between font-semibold">
-                <span>Grand total</span>
-                <span>{money(grandTotal)}</span>
+              <div className="border-t pt-3 flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span className="text-emerald-700">LKR {money(grandTotal)}</span>
+              </div>
+
+              <Button
+                className="w-full py-3"
+                type="button"
+                disabled={cart.length === 0 || isCheckingOut}
+                onClick={handleCheckout}
+              >
+                {paymentMethod === "CASH" ? <Banknote size={16} /> : <CreditCard size={16} />}
+                {isCheckingOut ? "Processing..." : "Checkout"}
+              </Button>
+
+              <div className="text-xs text-slate-500">
+                Checkout creates a Sale and auto-deducts stock.
               </div>
             </div>
-
-            <button
-              className="mt-4 w-full px-4 py-3 rounded-xl bg-emerald-600 text-white font-semibold disabled:opacity-50"
-              type="button"
-              disabled={cart.length === 0 || isCheckingOut}
-              onClick={handleCheckout}
-            >
-              {isCheckingOut ? "Processing..." : "Checkout"}
-            </button>
-
-            <p className="text-xs text-slate-500 mt-2">
-              Checkout will create a Sale and auto-deduct stock.
-            </p>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

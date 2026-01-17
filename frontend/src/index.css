@@ -1,5 +1,37 @@
 @import "tailwindcss";
 
-html, body {
-  background: #f8fafc;
+:root{
+  /* Warm background */
+  --bg1: 255 251 235;   /* amber-50 */
+  --bg2: 254 243 199;   /* amber-100 */
+
+  /* Surfaces */
+  --card: 255 255 255;
+  --surface: 255 248 220; /* warm cream */
+
+  /* Text */
+  --text: 69 26 3;      /* amber-950 */
+  --muted: 120 113 108; /* stone-500 */
+  --border: 245 158 11; /* amber-500 (soft usage) */
+
+  /* Brand (yellow / amber) */
+  --brand: 245 158 11;  /* amber-500 */
+  --brand-dark: 217 119 6; /* amber-600 */
+
+  /* Status */
+  --success: 22 163 74;
+  --danger: 220 38 38;
+}
+
+html, body{
+  color: rgb(var(--text));
+  background:
+    radial-gradient(900px circle at 20% 10%, rgba(255,200,120,0.35), transparent 55%),
+    radial-gradient(900px circle at 80% 15%, rgba(255,170,70,0.25), transparent 55%),
+    linear-gradient(135deg, #fff7ed, #ffedd5);
+}
+
+*{
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

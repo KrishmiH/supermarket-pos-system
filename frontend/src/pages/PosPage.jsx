@@ -260,8 +260,8 @@ export default function PosPage() {
             className="p-0 overflow-hidden"
           >
             <div className="overflow-auto">
-              <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-600">
+              <table className="w-full text-sm border-collapse">
+                <thead className="bg-gradient-to-r from-orange-100 to-orange-200 text-orange-900 border-b border-orange-300">
                   <tr>
                     <th className="px-4 py-3 text-left">Item</th>
                     <th className="px-4 py-3 text-right">Unit</th>
@@ -278,25 +278,27 @@ export default function PosPage() {
                       </td>
                     </tr>
                   ) : (
-                    cart.map((i) => (
-                      <tr key={i.id} className="border-t hover:bg-slate-50">
+                    cart.map((i, idx) => (
+                      <tr key={i.id} className={`border-b border-orange-200 odd:bg-[#fffaf0] even:bg-[#fff3e0] hover:bg-orange-100 transition ${
+                        idx % 2 === 0 ? "bg-[#fffaf0]" : "bg-[#fff3e0]"
+                      }`}>
                         <td className="px-4 py-3">
                           <div className="font-semibold">{i.name}</div>
                           <div className="text-xs text-slate-500 font-mono">{i.barcode}</div>
                         </td>
-                        <td className="px-4 py-3 text-right">LKR {money(i.unitPrice)}</td>
+                        <td className="px-4 py-3 text-right font-semibold text-orange-900">LKR {money(i.unitPrice)}</td>
                         <td className="px-4 py-3">
                           <div className="flex items-center justify-center gap-2">
                             <Button variant="secondary" className="px-2 py-2" onClick={() => decQty(i.id)} type="button">
                               <Minus size={16} />
                             </Button>
-                            <div className="w-10 text-center font-semibold">{i.qty}</div>
+                            <div className="w-10 text-center font-semibold text-orange-900">{i.qty}</div>
                             <Button variant="secondary" className="px-2 py-2" onClick={() => incQty(i.id)} type="button">
                               <Plus size={16} />
                             </Button>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-right font-semibold">
+                        <td className="px-4 py-3 text-right font-semibold text-orange-900">
                           LKR {money(i.unitPrice * i.qty)}
                         </td>
                         <td className="px-4 py-3 text-right">

@@ -64,8 +64,8 @@ export default function ReceiptDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <Card className="lg:col-span-2 overflow-hidden">
             <div className="px-4 py-3 border-b font-semibold">Items</div>
-            <table className="w-full text-sm">
-              <thead className="bg-slate-100 text-slate-600">
+            <table className="w-full text-sm border-collapse">
+              <thead className="bg-gradient-to-r from-orange-100 to-orange-200 text-orange-900 border-b border-orange-300">
                 <tr>
                   <th className="px-4 py-3 text-left">Item</th>
                   <th className="px-4 py-3 text-right">Unit</th>
@@ -75,16 +75,18 @@ export default function ReceiptDetailsPage() {
               </thead>
               <tbody>
                 {sale.items.map((i, idx) => (
-                  <tr key={idx} className="border-t">
+                  <tr key={idx} className={`border-b border-orange-200 odd:bg-[#fffaf0] even:bg-[#fff3e0] hover:bg-orange-100 transition ${
+                    idx % 2 === 0 ? "bg-[#fffaf0]" : "bg-[#fff3e0]"
+                  }`}>
                     <td className="px-4 py-3">
                       <div className="font-medium">{i.name}</div>
                       <div className="text-xs text-slate-500 font-mono">
                         {i.barcode}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-right">LKR {money(i.unitPrice)}</td>
+                    <td className="px-4 py-3 text-right font-semibold text-orange-900">LKR {money(i.unitPrice)}</td>
                     <td className="px-4 py-3 text-center">{i.qty}</td>
-                    <td className="px-4 py-3 text-right font-medium">
+                    <td className="px-4 py-3 text-right font-semibold text-orange-900">
                       LKR {money(i.lineTotal)}
                     </td>
                   </tr>

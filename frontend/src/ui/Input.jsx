@@ -1,17 +1,8 @@
-import React from "react";
-
-const Input = React.forwardRef(
-  ({ className = "", ...props }, ref) => {
-    return (
-      <input
-        ref={ref}
-        className={`border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 ${className}`}
-        {...props}
-      />
-    );
-  }
-);
-
-Input.displayName = "Input";
-
-export default Input;
+export default function Input({ className = "", ...props }) {
+  return (
+    <input
+      className={`w-full rounded-xl border border-orange-300 bg-[#fff7ed] px-3 py-2.5 text-sm outline-none focus:ring-4 focus:ring-orange-200 focus:border-orange-400 ${className}`}
+      {...props}
+    />
+  );
+}

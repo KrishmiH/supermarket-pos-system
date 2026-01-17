@@ -5,6 +5,7 @@ import { money } from "../utils/money";
 import Card from "../ui/Card";
 import Button from "../ui/Button";
 import Badge from "../ui/Badge";
+import Table from "../ui/Table";
 import { RefreshCcw } from "lucide-react";
 
 export default function ReceiptsPage() {
@@ -52,51 +53,51 @@ export default function ReceiptsPage() {
       <Card>
         {loading ? (
           <div className="p-6 text-slate-500">Loading receipts…</div>
-        ) : sales.length === 0 ? (
-          <div className="p-6 text-slate-500">No receipts found.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-slate-100 text-slate-600">
-              <tr>
-                <th className="px-4 py-3 text-left">Receipt</th>
-                <th className="px-4 py-3 text-left">Cashier</th>
-                <th className="px-4 py-3 text-left">Payment</th>
-                <th className="px-4 py-3 text-right">Total</th>
-                <th className="px-4 py-3 text-right">Date</th>
-                <th className="px-4 py-3 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sales.map((s) => (
-                <tr key={s.id} className="border-t hover:bg-slate-50">
-                  <td className="px-4 py-3 font-mono">{s.receiptNo}</td>
-                  <td className="px-4 py-3">{s.cashierName}</td>
-                  <td className="px-4 py-3">
-                    <Badge
-                      tone={s.paymentMethod === "CASH" ? "blue" : "purple"}
-                    >
-                      {s.paymentMethod}
-                    </Badge>
-                  </td>
-                  <td className="px-4 py-3 text-right font-medium">
-                    LKR {money(s.grandTotal)}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    {new Date(s.createdAt).toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      onClick={() => navigate(`/receipts/${s.receiptNo}`)}
-                    >
-                      View
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <Table
+            columns={[
+              { key: "receiptNo", title: "Receipt" },
+              { key: "cashierName", title: "Cashier" },
+              {
+                key: "paymentMethod",
+                title: "Payment",
+                render: (r) => (
+                  <Badge tone={r.paymentMethod === "CASH" ? "blue" : "purple"}>
+                    {r.paymentMethod}
+                  </Badge>
+                ),
+              },
+              {
+                key: "grandTotal",
+                title: "Total",
+                align: "right",
+                render: (r) => <>LKR {money(r.grandTotal)}</>,
+              },
+              {
+                key: "createdAt",
+                title: "Date",
+                align: "right",
+                render: (r) => new Date(r.createdAt).toLocaleString(),
+              },
+              {
+                key: "action",
+                title: "Action",
+                align: "right",
+                render: (r) => (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => navigate(`/receipts/${r.receiptNo}`)}
+                  >
+                    View
+                  </Button>
+                ),
+              },
+            ]}
+            rows={sales}
+            rowKey={(r) => r.id}
+            emptyText="No receipts found."
+          />
         )}
       </Card>
     </div>

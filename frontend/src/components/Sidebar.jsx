@@ -3,8 +3,9 @@ import { getAuth } from "../services/auth";
 import { LayoutDashboard, ShoppingCart, Package, Receipt } from "lucide-react";
 
 const linkBase =
-  "flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition hover:bg-slate-800";
-const active = "bg-slate-800";
+  "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition hover:bg-orange-800/60";
+const active =
+  "bg-orange-800/70 ring-1 ring-orange-400/40";;
 
 export default function Sidebar() {
   const auth = getAuth();
@@ -13,14 +14,18 @@ export default function Sidebar() {
   const isAdminOrManager = role === "Admin" || role === "Manager";
 
   return (
-    <div className="w-64 bg-slate-900 text-white min-h-screen p-4">
-      <div className="flex items-center gap-2 mb-6">
-        <div className="h-10 w-10 rounded-2xl bg-white/10 flex items-center justify-center font-bold">
+    <div className="w-72 min-h-screen p-5 text-orange-50 bg-[#7c2d12]">
+      <div className="flex items-center gap-3 mb-7">
+        <div className="h-11 w-11 rounded-2xl bg-orange-800/70 ring-1 ring-orange-400/40 flex items-center justify-center font-extrabold">
           POS
         </div>
         <div>
-          <div className="font-bold leading-tight">Supermarket POS</div>
-          <div className="text-xs text-white/60">Inventory & Billing</div>
+          <div className="font-extrabold text-white leading-tight">
+            Supermarket POS
+          </div>
+          <div className="text-xs text-orange-200">
+            Billing • Inventory • Receipts
+          </div>
         </div>
       </div>
 

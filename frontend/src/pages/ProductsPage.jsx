@@ -6,6 +6,7 @@ import Card from "../ui/Card";
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Badge from "../ui/Badge";
+import Table from "../ui/Table";
 import { RefreshCcw, Plus, Pencil, Trash2 } from "lucide-react";
 
 const emptyForm = {
@@ -177,69 +178,71 @@ export default function ProductsPage() {
       <Card className="overflow-hidden">
         {loading ? (
           <div className="p-6 text-slate-500">Loading products…</div>
-        ) : products.length === 0 ? (
-          <div className="p-6 text-slate-500">No products found.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-slate-100 text-slate-600">
-              <tr>
-                <th className="px-4 py-3 text-left">Barcode</th>
-                <th className="px-4 py-3 text-left">Name</th>
-                <th className="px-4 py-3 text-left">Category</th>
-                <th className="px-4 py-3 text-right">Price</th>
-                <th className="px-4 py-3 text-center">Stock</th>
-                <th className="px-4 py-3 text-center">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {products.map((p) => {
-                const lowStock = p.stock <= p.reorderLevel;
-
-                return (
-                  <tr key={p.id} className="border-t hover:bg-slate-50">
-                    <td className="px-4 py-3 font-mono">{p.barcode}</td>
-                    <td className="px-4 py-3 font-medium">{p.name}</td>
-                    <td className="px-4 py-3">{p.category}</td>
-                    <td className="px-4 py-3 text-right">LKR {money(p.price)}</td>
-
-                    <td className="px-4 py-3 text-center">
-                      <Badge tone={lowStock ? "red" : "emerald"}>
-                        {p.stock}
-                      </Badge>
-                      <div className="text-[11px] text-slate-500 mt-1">
-                        Reorder ≤ {p.reorderLevel}
-                      </div>
-                    </td>
-
-                    <td className="px-4 py-3 text-center">
-                      <Badge tone={p.isActive ? "emerald" : "slate"}>
-                        {p.isActive ? "Active" : "Inactive"}
-                      </Badge>
-                    </td>
-
-                    <td className="px-4 py-3 text-right space-x-2">
-                      <button
-                        className="text-xs text-blue-600 hover:text-blue-700"
-                        onClick={() => openEdit(p)}
-                        type="button"
-                      >
-                        <Pencil className="w-4 h-4 inline" />
-                      </button>
-                      <button
-                        className="text-xs text-red-600 hover:text-red-700"
-                        onClick={() => handleDelete(p)}
-                        type="button"
-                      >
-                        <Trash2 className="w-4 h-4 inline" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          <Table
+            columns={[
+              { key: "barcode", title: "Barcode" },
+              { key: "name", title: "Name" },
+              { key: "category", title: "Category" },
+              {
+                key: "price",
+                title: "Price",
+                align: "right",
+                render: (r) => <>LKR {money(r.price)}</>,
+              },
+              {
+                key: "stock",
+                title: "Stock",
+                align: "center",
+                render: (r) => (
+                  <div>
+                    <Badge tone={r.stock <= r.reorderLevel ? "red" : "emerald"}>
+                      {r.stock}
+                    </Badge>
+                    <div className="text-[11px] text-slate-500 mt-1">
+                      Reorder ≤ {r.reorderLevel}
+                    </div>
+                  </div>
+                ),
+              },
+              {
+                key: "isActive",
+                title: "Status",
+                align: "center",
+                render: (r) => (
+                  <Badge tone={r.isActive ? "emerald" : "slate"}>
+                    {r.isActive ? "Active" : "Inactive"}
+                  </Badge>
+                ),
+              },
+              {
+                key: "actions",
+                title: "Actions",
+                align: "right",
+                render: (r) => (
+                  <div className="space-x-2">
+                    <button
+                      className="text-xs text-blue-600 hover:text-blue-700"
+                      onClick={() => openEdit(r)}
+                      type="button"
+                    >
+                      <Pencil className="w-4 h-4 inline" />
+                    </button>
+                    <button
+                      className="text-xs text-red-600 hover:text-red-700"
+                      onClick={() => handleDelete(r)}
+                      type="button"
+                    >
+                      <Trash2 className="w-4 h-4 inline" />
+                    </button>
+                  </div>
+                ),
+              },
+            ]}
+            rows={products}
+            rowKey={(r) => r.id}
+            emptyText="No products found."
+          />
         )}
       </Card>
 

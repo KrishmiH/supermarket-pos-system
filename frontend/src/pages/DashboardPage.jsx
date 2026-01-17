@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../services/api";
+import { money } from "../utils/money";
 
 function StatCard({ label, value }) {
   return (
@@ -65,7 +66,7 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard
           label="Today's Revenue"
-          value={loading ? "Loading..." : todayRevenue}
+          value={loading ? "Loading..." : money(todayRevenue)}
         />
         <StatCard
           label="Recent Transactions"
@@ -105,7 +106,7 @@ export default function DashboardPage() {
                   <td className="px-4 py-3 font-mono">{s.receiptNo}</td>
                   <td className="px-4 py-3">{s.cashierName}</td>
                   <td className="px-4 py-3">{s.paymentMethod}</td>
-                  <td className="px-4 py-3 text-right">{s.grandTotal}</td>
+                  <td className="px-4 py-3 text-right">{money(s.grandTotal)}</td>
                   <td className="px-4 py-3 text-right">
                     {new Date(s.createdAt).toLocaleString()}
                   </td>
